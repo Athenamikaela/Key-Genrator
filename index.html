@@ -3,151 +3,500 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExampleHub Key Generator</title>
+    <title>Vampire Key System</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0000, #2d0000, #0f0f0f);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            color: #ffffff;
+        }
+
+        .container {
+            background: rgba(20, 0, 0, 0.9);
+            border: 2px solid #8B0000;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .privacy-screen, .checkpoint1-screen {
+            display: none;
+        }
+
+        .privacy-screen.active, .checkpoint1-screen.active {
+            display: block;
+        }
+
+        h1 {
+            color: #DC143C;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+            text-shadow: 0 0 10px rgba(220, 20, 60, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(139, 0, 0, 0.1);
+            border-left: 4px solid #DC143C;
+            border-radius: 8px;
+        }
+
+        .section h3 {
+            color: #FF6B6B;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .section p {
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .scroll-content {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        .scroll-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-content::-webkit-scrollbar-track {
+            background: rgba(139, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .scroll-content::-webkit-scrollbar-thumb {
+            background: #DC143C;
+            border-radius: 4px;
+        }
+
+        .scroll-content::-webkit-scrollbar-thumb:hover {
+            background: #B22222;
+        }
+
+        .agree-btn, .watch-btn, .unlock-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #4a4a4a, #666666);
+            color: #999999;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .agree-btn.enabled, .watch-btn.enabled, .unlock-btn.enabled {
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .agree-btn.enabled:hover, .watch-btn.enabled:hover, .unlock-btn.enabled:hover {
+            background: linear-gradient(45deg, #DC143C, #FF6B6B);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .unlock-btn.completed {
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .checkpoint-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #DC143C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+        }
+
+        .checkpoint-title {
+            font-size: 24px;
+            color: #DC143C;
+            margin-bottom: 15px;
             text-align: center;
         }
-        .container {
-            background-color: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+
+        .checkpoint-description {
+            color: #cccccc;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
         }
-        h1 {
-            font-size: 24px;
+
+        .video-task {
+            background: rgba(139, 0, 0, 0.2);
+            border: 3px solid #8B0000;
+            border-radius: 25px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .task-header {
+            color: #FF6B6B;
+            font-size: 18px;
+            font-weight: bold;
             margin-bottom: 10px;
         }
-        #keyDisplay {
-            font-size: 18px;
-            background-color: #333;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            width: 80%;
-            color: #fff;
-            border: none;
-            text-align: center;
-            display: none;
-        }
-        #expiration {
-            font-size: 14px;
-            color: #bbb;
+
+        .task-description {
+            color: #cccccc;
             margin-bottom: 20px;
-            display: none;
         }
-        button {
-            background-color: #ff5555;
-            border: none;
-            padding: 10px 20px;
-            color: #fff;
-            font-size: 16px;
-            border-radius: 5px;
+
+        .watch-btn {
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            color: white;
+            border: 2px solid #8B0000;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        button:hover {
-            background-color: #ff7777;
+
+        .watch-btn:hover {
+            background: linear-gradient(45deg, #DC143C, #FF6B6B);
+            transform: translateY(-2px);
+        }
+
+        .watch-btn.watching {
+            background: linear-gradient(45deg, #4a4a4a, #666666);
+            cursor: not-allowed;
+        }
+
+        .watch-btn.completed {
+            background: linear-gradient(45deg, #006400, #32CD32);
+            cursor: not-allowed;
+        }
+
+        .progress-text {
+            color: #FF6B6B;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .unlock-section {
+            background: rgba(139, 0, 0, 0.2);
+            border: 3px solid #8B0000;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .blood-drip {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 20px;
+            background: linear-gradient(to bottom, #DC143C, #8B0000);
+            border-radius: 0 0 10px 10px;
+            animation: drip 3s infinite;
+        }
+
+        @keyframes drip {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        .footer-text .brand {
+            color: #DC143C;
+            font-weight: bold;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #8B0000, #DC143C);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
+            z-index: 1000;
+            display: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .discord-btn {
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .discord-btn img {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .discord-btn:hover img {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>ExampleHub Key Generator</h1>
-        <input id="keyDisplay" readonly />
-        <div id="expiration"></div>
-        <button onclick="getKey()">Get Key</button>
+        <div class="blood-drip"></div>
+        
+        <!-- Keysystem Screen -->
+        <div class="privacy-screen active" id="privacyScreen">
+            <h1>
+                🩸 Keysystem
+                <button class="discord-btn" onclick="copyDiscordLink()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord Logo">
+                </button>
+            </h1>
+            
+            <div class="scroll-content" id="scrollContent">
+                <div class="section">
+                    <h3>1. Why Use Our Script?</h3>
+                    <p>Because it's the best Blade Ball script and it's free! You can use it whenever you want.</p>
+                </div>
+
+                <div class="section">
+                    <h3>2. Does It Beat Paid Scripts?</h3>
+                    <p>Some of them yes, but some of them no, like Allusive and Visualise, yeah.</p>
+                </div>
+
+                <div class="section">
+                    <h3>3. Does the Script Update Frequently?</h3>
+                    <p>Yes, the script updates daily.</p>
+                </div>
+
+                <div class="section">
+                    <h3>4. Does It Never Patch When Blade Ball Updates?</h3>
+                    <p>No, but we can also fix it and release.</p>
+                </div>
+
+                <div class="section">
+                    <h3>5. Why Join Our Discord?</h3>
+                    <p>Cause you can access the script directly and you can report some bugs that we can fix.</p>
+                </div>
+            </div>
+
+            <button class="agree-btn" id="agreeBtn" disabled>I Agree</button>
+        </div>
+
+        <!-- Checkpoint 1 Screen -->
+        <div class="checkpoint1-screen" id="checkpoint1Screen">
+            <div class="checkpoint-icon">🗝️</div>
+            <h2 class="checkpoint-title">Checkpoint 1</h2>
+            <p class="checkpoint-description">Complete this checkpoint to proceed with your journey into the darkness.</p>
+            
+            <div class="video-task">
+                <div class="task-header">📺 WATCH A VIDEO UNTIL THE END</div>
+                <div class="task-description">Complete this task to proceed with your journey.</div>
+                
+                <button class="watch-btn" id="watchBtn">
+                    ▶️ Watch Video
+                </button>
+                
+                <div class="progress-text" id="progressText">Unlock Progress (0/1)</div>
+            </div>
+
+            <div class="unlock-section">
+                <button class="unlock-btn" id="unlockBtn" disabled>UNLOCK CONTENT</button>
+            </div>
+
+            <div class="footer-text">
+                Support Content Creators: The content is brought to you for FREE thanks to the ads on this page.<br>
+                Powered by <span class="brand">LeetLabs</span> - You Create. We Monetize
+            </div>
+        </div>
     </div>
 
+    <div class="notification" id="notification"></div>
+
     <script>
-        function makeid(length) {
-            let result = '';
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            const charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
-        }
+        let hasScrolledToBottom = false;
+        let currentScreen = 'privacy';
+        let taskCompleted = false;
+        let contentUnlocked = false;
+        
+        const scrollContent = document.getElementById('scrollContent');
+        const agreeBtn = document.getElementById('agreeBtn');
+        const watchBtn = document.getElementById('watchBtn');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const progressText = document.getElementById('progressText');
+        const notification = document.getElementById('notification');
 
-        const keyStorage = "exampleHubKey";
-        const keyDisplay = document.getElementById("keyDisplay");
-        const expirationDisplay = document.getElementById("expiration");
+        const privacyScreen = document.getElementById('privacyScreen');
+        const checkpoint1Screen = document.getElementById('checkpoint1Screen');
 
-        function generateAndStoreKey() {
-            const newKey = makeid(10);
-            const expireDate = new Date();
-            expireDate.setHours(expireDate.getHours() + 24);
-            localStorage.setItem(keyStorage, JSON.stringify({
-                key: newKey,
-                expire: expireDate.getTime()
-            }));
-            return { key: newKey, expire: expireDate };
-        }
-
-        function checkAndUpdateKey() {
-            const storedData = localStorage.getItem(keyStorage);
-            const currentDate = new Date();
-
-            if (!storedData) {
-                return null;
-            } else {
-                const data = JSON.parse(storedData);
-                const expireDate = new Date(data.expire);
-
-                if (currentDate >= expireDate) {
-                    return null;
-                } else {
-                    return { key: data.key, expire: expireDate };
+        scrollContent.addEventListener('scroll', function() {
+            const scrollTop = scrollContent.scrollTop;
+            const scrollHeight = scrollContent.scrollHeight;
+            const clientHeight = scrollContent.clientHeight;
+            
+            if (scrollTop + clientHeight >= scrollHeight - 10) {
+                if (!hasScrolledToBottom) {
+                    hasScrolledToBottom = true;
+                    agreeBtn.disabled = false;
+                    agreeBtn.classList.add('enabled');
+                    agreeBtn.textContent = 'I Accept';
                 }
             }
-        }
+        });
 
-        function copyKey() {
-            const keyText = keyDisplay.value;
-            navigator.clipboard.writeText(keyText).then(() => {
-                alert("Key copied to clipboard!");
+        agreeBtn.addEventListener('click', function() {
+            if (hasScrolledToBottom) {
+                switchScreen('checkpoint1');
+            }
+        });
+
+        watchBtn.addEventListener('click', function() {
+            if (!taskCompleted && !this.classList.contains('watching')) {
+                startWatchTask();
+                window.open('https://youtu.be/juow3sqqBjw?si=YdQuz46bPEJ8RjR3', '_blank');
+            }
+        });
+
+        unlockBtn.addEventListener('click', function() {
+            if (taskCompleted && !contentUnlocked) {
+                contentUnlocked = true;
+                unlockBtn.textContent = 'COMPLETE CHECKPOINT';
+                unlockBtn.classList.add('completed');
+                showNotification('🔓 Content Unlocked! Redirecting to key generator...');
+                setTimeout(() => {
+                    window.location.href = 'key_generator.html';
+                }, 2000);
+            }
+        });
+
+        function copyDiscordLink() {
+            const discordLink = 'https://dsc.gg/cryzixbb';
+            navigator.clipboard.writeText(discordLink).then(() => {
+                showNotification('📋 Copied!');
             }).catch(err => {
-                alert("Failed to copy key. Please select and copy manually (Ctrl+C).");
-                console.error("Failed to copy: ", err);
+                showNotification('⚠️ Failed to copy link!');
             });
         }
 
-        function getKey() {
-            let keyData = checkAndUpdateKey();
+        function switchScreen(screen) {
+            privacyScreen.classList.remove('active');
+            checkpoint1Screen.classList.remove('active');
 
-            if (!keyData) {
-                const { key, expire } = generateAndStoreKey();
-                keyDisplay.value = key;
-                expirationDisplay.textContent = `Expires: ${expire.toLocaleString()}`;
-                keyDisplay.style.display = "block";
-                expirationDisplay.style.display = "block";
-                copyKey();
-            } else {
-                keyDisplay.value = keyData.key;
-                expirationDisplay.textContent = `Expires: ${keyData.expire.toLocaleString()}`;
-                keyDisplay.style.display = "block";
-                expirationDisplay.style.display = "block";
-                copyKey();
+            if (screen === 'privacy') {
+                privacyScreen.classList.add('active');
+            } else if (screen === 'checkpoint1') {
+                checkpoint1Screen.classList.add('active');
+                checkpoint1Screen.classList.add('fade-in');
             }
+            
+            currentScreen = screen;
         }
 
-        // Initial check
-        const initialKeyData = checkAndUpdateKey();
-        if (initialKeyData) {
-            keyDisplay.value = initialKeyData.key;
-            expirationDisplay.textContent = `Expires: ${initialKeyData.expire.toLocaleString()}`;
-            keyDisplay.style.display = "block";
-            expirationDisplay.style.display = "block";
+        function startWatchTask() {
+            let timeRemaining = 45;
+            
+            watchBtn.classList.add('watching');
+            watchBtn.innerHTML = `🔄 Watching... (${timeRemaining}s)`;
+            
+            const countdown = setInterval(() => {
+                timeRemaining--;
+                watchBtn.innerHTML = `🔄 Watching... (${timeRemaining}s)`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(countdown);
+                    completeTask();
+                }
+            }, 1000);
         }
+
+        function completeTask() {
+            taskCompleted = true;
+            watchBtn.classList.remove('watching');
+            watchBtn.classList.add('completed');
+            watchBtn.innerHTML = '✅ Completed';
+            
+            progressText.textContent = 'Unlock Progress (1/1)';
+            
+            unlockBtn.disabled = false;
+            unlockBtn.classList.add('enabled');
+            
+            showNotification('🎉 Task completed! You can now unlock the content.');
+        }
+
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 4000);
+        }
+
+        setTimeout(() => {
+            if (!hasScrolledToBottom) {
+                scrollContent.scrollTop = 1;
+                setTimeout(() => scrollContent.scrollTop = 0, 500);
+            }
+        }, 1000);
     </script>
 </body>
 </html>
